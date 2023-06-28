@@ -1,34 +1,85 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import React, { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/NavBar.jsx";
+import HomePage from "./components/HomePage.jsx";
+import Statistics from "./components/Statistics.jsx";
+import Results from "./components/Results.jsx";
+import { fetchSessions } from "./api/sessions.js";
+import { fetchUser } from "./api/users.js";
+import { Container } from "./components/styled/Container.styled.js";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [sessions, setSessions] = useState([]);
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState([]);
+  const [addedSession, setAddedSession] = useState(false);
+
+  useEffect(() => {
+    const getInitialData = async () => {
+      if (token) {
+        const me = await fetchUser(token);
+        setUser(me);
+        setIsLoggedIn(true);
+      }
+    };
+    getInitialData();
+  }, [token]);
+
+  useEffect(() => {
+    const getInitialSessions = async () => {
+      if (token) {
+        const fetchedSessions = await fetchSessions(token);
+        setSessions(fetchedSessions);
+      }
+    };
+    getInitialSessions();
+  }, [addedSession]);
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+    <>
+      <Container>
+        <Navbar
+          token={token}
+          setToken={setToken}
+          setIsLoggedIn={setIsLoggedIn}
+          setUser={setUser}
+          isLoggedIn={isLoggedIn}
+        />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <HomePage
+                token={token}
+                setToken={setToken}
+                setIsLoggedIn={setIsLoggedIn}
+                setUser={setUser}
+                isLoggedIn={isLoggedIn}
+              />
+            }
+          />
+          <Route
+            path="/results"
+            element={
+              <Results
+                token={token}
+                sessions={sessions}
+                setSessions={setSessions}
+                user={user}
+                addedSession={addedSession}
+                setAddedSession={setAddedSession}
+              />
+            }
+          />
+          <Route
+            path="/statistics"
+            element={<Statistics sessions={sessions} user={user} />}
+          />
+        </Routes>
+      </Container>
+    </>
+  );
 }
 
-export default App
+export default App;
