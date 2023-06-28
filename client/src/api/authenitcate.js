@@ -16,7 +16,6 @@ export const authenticateNewUser = async ({
     });
 
     const result = await response.json();
-    console.log("%%%%", result);
     const { user, message, token } = result;
     if (token) {
       localStorage.setItem("token", token);
