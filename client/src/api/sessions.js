@@ -1,4 +1,4 @@
-const APIURL = "/api";
+const APIURL = "api";
 
 export const fetchSessions = async (token) => {
   try {

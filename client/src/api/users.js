@@ -1,9 +1,8 @@
-const APIURL = "/api";
+const APIURL = "api";
 
 export const fetchUser = async (token) => {
   try {
     const response = await fetch(`${APIURL}/users/me`, {
-      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

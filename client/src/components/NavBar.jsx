@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Nav, StyledNavBar } from "./styled/NavBar.styled";
+import logo from "../assets/logo1.png";
 
 const Navbar = ({ token, setToken, setUser, setIsLoggedIn, isLoggedIn }) => {
   const navigate = useNavigate();
   return (
     <>
       <StyledNavBar>
-        <img src="/logo1.png" alt="Logo"></img>
+        <img src={logo} alt="Logo" />
         {isLoggedIn ? (
           <>
             <div>
